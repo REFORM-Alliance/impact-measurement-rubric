@@ -48,7 +48,7 @@ reforms <- list(
     ),
     full_projections = "Extend the actual or estimated reduction forward to project multi-year prison-population (average daily population) or bed-space savings.",
     passed_bill = "California AB 1950",
-    passed_text = "sentencing disposition data exists at the county/month level and is granular enough to calculate the real, actual effect once aggregated — Recidiviz simply hadn't run that calculation yet.",
+    passed_text = "we believe sentencing disposition data exists at the county/month level and is granular enough to calculate the real, actual effect once aggregated — Recidiviz simply hadn't run that calculation yet.",
     hypo_text = "A state caps felony theft sentences at three years. Court sentencing data by offense (an actual, if the state publishes it) would show how many current sentences exceed the new cap; where that data doesn't exist, arrest and conviction records combined with average sentence-length data could produce a defensible estimate instead."
   ),
   list(
@@ -91,14 +91,14 @@ reforms <- list(
     name = "Early Termination & Supervision Length",
     def = "Shortens time spent under active probation or parole supervision.",
     matrix_actuals = "Early-termination counts by year, from the supervising agency",
-    matrix_estimates = "Eligible population multiplied by an assumed uptake rate",
+    matrix_estimates = "Eligible population multiplied by an assumed grant rate",
     matrix_projections = "Cumulative terminations if the current grant-rate trend continues",
     full_actuals = "Early-termination counts by year, from the supervising agency's own reporting.",
     full_estimates = list(
       lead = "When usage isn't separately tracked, model it from two inputs:",
       items = c(
         "The eligible population",
-        "An assumed uptake rate, drawn from a comparable jurisdiction"
+        "An assumed grant rate, drawn from a comparable jurisdiction"
       )
     ),
     full_projections = list(
@@ -117,18 +117,24 @@ reforms <- list(
     name = "Violation Response & Individualized Conditions",
     def = "Changes how technical violations are penalized, or requires supervision conditions to be individualized.",
     matrix_actuals = "Revocation and technical-violation reincarceration counts",
-    matrix_estimates = "Modeled shift in average conditions or in the revocation rate",
+    matrix_estimates = "Modeled from admission-reason breakdowns, case-file samples, or peer-state benchmarks",
     matrix_projections = "Projected reduction in revocation-driven admissions",
-    full_actuals = "Revocation and technical-violation reincarceration counts, from DOC release data.",
+    full_actuals = list(lead = "When conditions data is readily available, report", 
+                        items = c(
+                          "Revocation counts", 
+                          "Technical violation reincarceration counts", 
+                          "Both of the above disaggregated by types and numbers of conditions"
+                        )),
     full_estimates = list(
-      lead = "When conditions data lives only in internal case files, model the likely shift from whatever partial reporting exists, in either:",
+      lead = "This bundles two different levers, so the estimate depends on which one the bill touches:",
       items = c(
-        "Average conditions per case",
-        "The revocation rate"
+        "Individualized conditions: use the state's standard/default conditions template (usually public) as the \u201cbefore\u201d baseline, then estimate the shift from a modest case-file sample or practitioner interviews, since case-level conditions data almost never exists",
+        "Violation response, e.g. a sentence cap or graduated sanctions: revocation and TV reincarceration counts rarely exist off the shelf, so build the baseline in stages \u2014 start with whatever admission-reason breakdown the DOC already publishes, since many report \u201ctechnical violation revocation\u201d as its own top-line admissions category, separate from revocations for a new crime; if only a population share is published instead of an admissions count (e.g., \u201cX% of the prison population is there on a technical violation\u201d), convert it using average length of stay, since admissions is roughly the population share divided by the average time served for a TV revocation; and if neither exists, sample case files or court dockets from a handful of counties, code each case's outcome, and scale the sample rate up using a known denominator like total probation/parole caseload in those counties",
+        "Once you have that baseline count, size the new rule's effect by benchmarking against a peer state that's already implemented something similar \u2014 apply its published before/after percentage change to your own baseline, rather than trying to reconstruct a full severity-tier distribution from scratch"
       )
     ),
     full_projections = list(
-      lead = "Extend the actual or estimated revocation-rate change forward to project a reduction in either:",
+      lead = "Extend the actual or estimated revocation-rate change forward to project any changes in either:",
       items = c(
         "Revocation-driven admissions",
         "Average daily population"
@@ -173,7 +179,7 @@ reforms <- list(
         "Conviction-record audits"
       )
     ),
-    full_projections = "Project future clearances as an eligible backlog works through the system \u2014 especially relevant for automatic or \u201cclean slate\u201d mechanisms that take years to fully implement.",
+    full_projections = "Project future clearances by projecting out the eligible population and assuming a steady rate of expungement for the eligible population, as some \u201cclean slate\u201d mechanisms can take years to fully implement.",
     passed_bill = "Maryland SB 432",
     passed_text = "an actual count exists for the marijuana-pardon population (175,000 convictions expunged); the broader population whose charges were marked STET still requires an estimate, since no repository number exists for it yet.",
     hypo_text = "A state passes automatic expungement for low-level convictions after seven crime-free years. Since most states don't publish an \u201celigible population\u201d figure, this would start as an estimate built from conviction records, with actuals only becoming available once the state repository begins reporting completed expungements."
@@ -183,11 +189,17 @@ reforms <- list(
     name = "Diversion & Alternatives to Incarceration",
     def = "Expands pre- or post-charge alternatives to traditional prosecution, probation, or incarceration.",
     matrix_actuals = "Program enrollment counts, where centrally reported (rare)",
-    matrix_estimates = "Modeled shift into diversion, dependent on how \u201cdiverted\u201d is defined",
+    matrix_estimates = "Eligible population combined with a stakeholder-informed diversion rate",
     matrix_projections = "Future diversion volume if referral rates hold (most speculative)",
     full_actuals = "Program enrollment counts, on the rare occasions a diversion program reports centrally and consistently.",
-    full_estimates = "Requires first settling a genuinely contested definitional question \u2014 what counts as \u201cdiverted,\u201d and diverted from what \u2014 before modeling the shift in volume.",
-    full_projections = "The most speculative measurement type in this rubric, since it compounds definitional uncertainty with a forward-looking volume estimate.",
+    full_estimates = list(
+      lead = "Requires first settling a genuinely contested definitional question \u2014 what counts as \u201cdiverted,\u201d and diverted from what \u2014 before modeling the shift in volume. Consult with stakeholders, experts, or statistics in comparable jurisdictions to estimate a ",
+      items = c(
+        "Eligible population for the diversion", 
+        "A reasonable diversion rate"
+      )
+    ),
+    full_projections = "The most speculative measurement type in this rubric, since it compounds definitional uncertainty with a forward-looking volume estimate. If we can find a reasonable estimate of the eligible population for the diversion, we can project that forward and use the agreed upon range of diversion rates to predict the affected population.",
     passed_bill = "California AB 3234",
     passed_text = "even Recidiviz's own approach embeds an assumption \u2014 treating all diversion as diversion specifically from probation \u2014 rather than an observed fact.",
     hypo_text = "A state creates a pre-charge diversion track for low-level drug offenses. Actual program-level tracking typically doesn't exist until well after launch, so the first year or two would rely on an estimate built from arrest data and an assumed diversion rate."
@@ -196,17 +208,26 @@ reforms <- list(
     code = "MM",
     name = "Mandatory Minimum Reform",
     def = "Eliminates or reduces mandatory minimum sentencing requirements.",
-    matrix_actuals = "Pre/post sentencing data for the affected offenses (statutory change)",
-    matrix_estimates = "Share of cases following new guidance (administrative workaround)",
+    matrix_actuals = "Sentence counts and average lengths, before and after the change",
+    matrix_estimates = "Modeled from offense-mix ratios, floor-bunching patterns, or peer-state benchmarks",
     matrix_projections = "Future reduction in mandatory-minimum-driven admissions",
     full_actuals = list(
       lead = "Sentencing data for the specific affected offenses \u2014 cleanest when the reform is a statutory change rather than an administrative one:",
       items = c(
-        "Sentencing data from before the change",
-        "Sentencing data from after the change"
+        "Sentence counts and average sentence lengths from before the change",
+        "Sentence counts and average sentence lengths from after the change"
       )
     ),
-    full_estimates = "When implemented through an administrative workaround, estimate the share of cases actually following the new guidance, since prosecutors typically retain discretion to route around it.",
+    full_estimates = list(
+      lead = "The right proxy depends on what's actually missing:",
+      items = c(
+        "Administrative workaround instead of a statute: estimate the share of cases actually following the new guidance, since prosecutors retain discretion to route around it",
+        "Counts missing: apportion whatever aggregate admissions reporting already exists down to the specific offense, using a known offense-mix ratio from arrest or charging data",
+        "Average length missing: check how much pre-reform sentences clustered right at the old statutory floor \u2014 heavy bunching means the minimum was binding and lengths will likely fall toward what comparable non-mandatory-minimum offenses get; a flatter distribution means judges already had discretion, so the reform may move the average less than a naive before/after comparison would suggest",
+        "Either gap: benchmark against a peer state that's already eliminated a similar mandatory minimum, using its published before/after change as a proxy",
+        "Cross-check the charge mix for the offense pre/post reform \u2014 prosecutors can partially offset a repeal by stacking a different enhancement, which would understate the reform's real effect if you only look at sentence length"
+      )
+    ),
     full_projections = "Extend the actual or estimated shift forward to project future reductions in mandatory-minimum-driven admissions.",
     passed_bill = "New Jersey A3469",
     passed_text = "the bill itself never passed; it was implemented through an Attorney General directive instead, so actuals are muddied by prosecutorial discretion to work around it.",
